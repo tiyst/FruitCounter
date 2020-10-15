@@ -45,7 +45,8 @@ public class FruitFragment extends Fragment {
         DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
 //        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm", Locale.GERMAN);
         this.dateText.setText(dateFormat.format(fruitDate));
-        this.countText.setText("Count: " + this.fruitCount);
+        this.countText.setText(getResources().getString(R.string.fruitCount, this.fruitCount));
+
     }
 
     public FruitFragment() {

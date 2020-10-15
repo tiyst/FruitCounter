@@ -66,9 +66,10 @@ public class MainActivity extends AppCompatActivity
     private void addFruit() {
         Random rng = new Random();
         Fruit fruit = new Fruit("banana", rng.nextInt(10), new Date());
-        DATABASE.fruitDao().insertFruit(fruit);
+        fruit.setEntryID(DATABASE.fruitDao().insertFruit(fruit)); //Database insert doesn't touch local fruit object
         FragmentTransaction ft = fManager.beginTransaction();
-        ft.add(R.id.fruitListLayout, FruitFragment.newInstance(fruit), String.valueOf(fruit.getEntryID()));
+        FruitFragment fruitFragment = FruitFragment.newInstance(fruit);
+        ft.add(R.id.fruitListLayout, fruitFragment, String.valueOf(fruit.getEntryID()));
         ft.commit();
     }
 
@@ -94,16 +95,21 @@ public class MainActivity extends AppCompatActivity
     public void deleteFruit(long id) {
         Fragment f = fManager.findFragmentByTag(String.valueOf(id));
         if (f != null) {
-            FragmentTransaction ft = fManager.beginTransaction()
-                    .setCustomAnimations(
-                    R.anim.slide_in,  // enter
-                    R.anim.fade_out,  // exit
-                    R.anim.fade_in,   // popEnter
-                    R.anim.slide_out  // popExit
-            );
-            ft.hide(f);
-            ft.commit();
-            DATABASE.fruitDao().deleteFruit(id);
+            int linesAffected = DATABASE.fruitDao().deleteFruit(id);
+            Log.d(TAG, "deleteFruit: lines affected: " + linesAffected);
+
+            if (linesAffected == 1) {
+                FragmentTransaction ft = fManager.beginTransaction()
+                        .setCustomAnimations(
+                        R.anim.slide_in,  // enter
+                        R.anim.fade_out,  // exit
+                        R.anim.fade_in,   // popEnter
+                        R.anim.slide_out  // popExit
+                );
+    //            ft.hide(f); //What does hide do?
+                ft.remove(f);
+                ft.commit();
+            }
         }
     }
 }

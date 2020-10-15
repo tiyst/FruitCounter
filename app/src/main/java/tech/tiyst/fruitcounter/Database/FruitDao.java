@@ -29,14 +29,14 @@ public interface FruitDao {
     @Update
     void updateFruid(Fruit fruit);
 
-
+    // === returns lines affected
     @Query("DELETE FROM fruits WHERE entryID IS :ID")
-    void deleteFruit(Long ID);
+    int deleteFruit(Long ID);
 
     @Query("DELETE FROM fruits WHERE date BETWEEN :from AND :to")
-    void deleteFruits(Date from, Date to);
+    int deleteFruits(Date from, Date to);
 
     @Query("DELETE FROM fruits")
-    void deleteAllFruits();
+    int deleteAllFruits();
 
 }
