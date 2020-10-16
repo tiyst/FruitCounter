@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import tech.tiyst.fruitcounter.Database.Fruit;
 import tech.tiyst.fruitcounter.R;
@@ -42,8 +43,7 @@ public class FruitFragment extends Fragment {
     private void initIdAttributes() {
 
         this.nameText.setText(fruitName);
-        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm");
-//        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy hh:mm", Locale.GERMAN);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
         this.dateText.setText(dateFormat.format(fruitDate));
         this.countText.setText(getResources().getString(R.string.fruitCount, this.fruitCount));
 
