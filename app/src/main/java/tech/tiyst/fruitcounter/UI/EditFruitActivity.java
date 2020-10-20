@@ -15,21 +15,24 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import tech.tiyst.fruitcounter.FruitCounterException;
+import tech.tiyst.fruitcounter.Database.Fruit;
+import tech.tiyst.fruitcounter.FCRuntimeException;
 import tech.tiyst.fruitcounter.R;
 
 public class EditFruitActivity extends AppCompatActivity {
 
     private static final String TAG = EditFruitActivity.class.getName();
 
+    public static final String ARG_FRUIT = "ARG_FRUIT";
     public static final String ARG_FRUIT_ID = "ARG_FRUIT_ID";
     public static final String ARG_FRUIT_NAME = "ARG_FRUIT_NAME";
     public static final String ARG_COUNT = "ARG_COUNT";
     public static final String ARG_DATE = "ARG_DATE";
 
-    private int fruitNameID;
-    private int count;
-    private Date fruitDate;
+    private Fruit fruit;
+
+    //Is a new fruit being added or one being edited, necessary for return code
+    private boolean isEditingFruit;
 
     private TextView nameText;
     private EditText dateText;
@@ -43,10 +46,15 @@ public class EditFruitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_fruit);
 
+        this.isEditingFruit = false;
+
         initViews();
-        fillViews();
-        initDatePicker();
-        updateDateLabel();
+        pullData();
+        updateLabels();
+    }
+
+    private Fruit getDefaultFruit() {
+        return new Fruit("Banana", 0, new Date());
     }
 
     private void initViews() {
@@ -54,31 +62,13 @@ public class EditFruitActivity extends AppCompatActivity {
         this.countText = findViewById(R.id.editTextCount);
         this.nameText = findViewById(R.id.fruitNameTextView);
         this.imageView = findViewById(R.id.editFruitImageView);
-    }
 
-    private void fillViews() throws FruitCounterException {
-        Bundle data = getIntent().getExtras();
-        String name = "Banana";
-        int count = 0;
-        Date date;
-        if (data != null && data.size() == 3) { //Editing existing fruit
-            name = data.getString(ARG_FRUIT_NAME);
-            count = data.getInt(ARG_COUNT);
-            date = (Date) data.getSerializable(ARG_DATE);
-            cal.setTime(date);
-        }
-
-        this.nameText.setText(name);
-        this.countText.setText(String.valueOf(count));
-        updateDateLabel();
-    }
-
-    private void initDatePicker() {
+        //Init DatePicker
         DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
             cal.set(Calendar.YEAR, year);
             cal.set(Calendar.MONTH, monthOfYear);
             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateDateLabel();
+            updateLabels();
         };
 
         this.dateText.setOnClickListener(v -> {
@@ -88,8 +78,34 @@ public class EditFruitActivity extends AppCompatActivity {
         });
     }
 
-    private void updateDateLabel() {
+    private void pullData() throws FCRuntimeException {
+        Bundle data = getIntent().getExtras();
+        if (data != null) { //Editing existing fruit
+            this.isEditingFruit = true;
+            this.fruit = (Fruit) data.getSerializable(ARG_FRUIT);
+        } else {
+            this.fruit = getDefaultFruit();
+        }
+        cal.setTime(this.fruit.getDate());
+
+    }
+
+    public void onSubmitClicked(View view) {
+        Intent intent = new Intent();
+//        intent.putExtra(ARG_FRUIT_ID, this.fruitFragmentID);
+//        intent.putExtra(ARG_FRUIT_NAME, nameText.getText());
+//        intent.putExtra(ARG_COUNT, Integer.parseInt(String.valueOf(countText.getText()))); //Disgusting
+//        intent.putExtra(ARG_DATE, cal.getTime());
+
+        intent.putExtra(ARG_FRUIT, this.fruit);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    private void updateLabels() {
+        this.nameText.setText(this.fruit.getFruitName());
+        this.countText.setText(String.valueOf(this.fruit.getCount()));
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-        this.dateText.setText(sdf.format(this.cal.getTime()));
+        this.dateText.setText(sdf.format(this.cal.getTime())); // FIXME: 10/20/2020 calendar or fruit date?
     }
 }

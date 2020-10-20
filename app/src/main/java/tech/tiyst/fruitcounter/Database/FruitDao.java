@@ -30,7 +30,7 @@ public interface FruitDao {
     long[] insertFruits(List<Fruit> fruits);
 
     @Update
-    void updateFruid(Fruit fruit);
+    void updateFruit(Fruit fruit);
 
     // === returns lines affected
     @Query("DELETE FROM fruits WHERE entryID IS :ID")

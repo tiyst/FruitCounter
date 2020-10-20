@@ -14,7 +14,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,6 +25,13 @@ import tech.tiyst.fruitcounter.Database.Fruit;
 import tech.tiyst.fruitcounter.Database.FruitDatabase;
 import tech.tiyst.fruitcounter.UI.EditFruitActivity;
 import tech.tiyst.fruitcounter.UI.FruitFragment;
+
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_COUNT;
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_DATE;
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT;
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_NAME;
+
+// TODO: 10/17/2020 edit fruit
 
 public class MainActivity extends AppCompatActivity
         implements FruitFragment.OnFruitSelectedListener {
@@ -69,18 +78,29 @@ public class MainActivity extends AppCompatActivity
 
         if (resultCode == RESULT_OK) {
             if (requestCode == RESULT_CODE_ADD) {
-                String fruitName = data.getStringExtra(EditFruitActivity.ARG_FRUIT_NAME);
-                int fruitCount = data.getIntExtra(EditFruitActivity.ARG_COUNT,-1);
-                Date fruitDate = (Date) data.getSerializableExtra(EditFruitActivity.ARG_DATE);
-                addFruit(fruitName, fruitCount, fruitDate);
+                Fruit fruit = (Fruit) data.getSerializableExtra(ARG_FRUIT);
+                if (fruit == null) {
+                    throw new FCRuntimeException("Fruit returned from adding is null"); //Please don't happen
+                }
+                addFruit(fruit);
             }
             if (requestCode == RESULT_CODE_EDIT) {
-                // TODO: 10/19/2020 do this 
+                Fruit fruit = (Fruit) data.getSerializableExtra(ARG_FRUIT);
+                if (fruit == null) {
+                    throw new FCRuntimeException("Fruit returned from adding is null"); //Please don't happen
+                }
+                FruitFragment frag = (FruitFragment)
+                        getSupportFragmentManager().findFragmentByTag(String.valueOf(fruit.getEntryID()));
+                if (frag != null) {
+                    frag.editText(ARG_FRUIT_NAME, data.getStringExtra(ARG_FRUIT_NAME));
+                    frag.editText(ARG_COUNT, String.valueOf(data.getIntExtra(ARG_COUNT, -1)));
+                    Date date = (Date) data.getSerializableExtra(ARG_DATE);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+                    frag.editText(ARG_DATE, dateFormat.format(date));
+
+                }
+
                 Log.e(TAG, "onActivityResult: editing fruit finished" );
-                int fruitName = data.getIntExtra(EditFruitActivity.ARG_FRUIT_ID,-1);
-                getFragmentManager().findFragmentByTag("ytes");
-
-
             }
         }
     }
@@ -102,6 +122,10 @@ public class MainActivity extends AppCompatActivity
     public void removeButton(View v) {
         Log.d(TAG, "removeButton: removing all");
         removeAllFruits();
+    }
+
+    private void addFruit(Fruit fruit) {
+        this.addFruit(fruit.getFruitName(), fruit.getCount(), fruit.getDate());
     }
 
     private void addFruit(String name, int count, Date date) {
@@ -136,10 +160,10 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "onFruitSelected: " + id);
         Intent intent = new Intent(this, EditFruitActivity.class);
         Fruit fruit = DATABASE.fruitDao().getFruit(id);
-        intent.putExtra(EditFruitActivity.ARG_FRUIT_NAME, fruit.getFruitName());
-        intent.putExtra(EditFruitActivity.ARG_COUNT, fruit.getCount());
-        intent.putExtra(EditFruitActivity.ARG_DATE, fruit.getDate());
-        startActivityForResult(intent, RESULT_CODE_EDIT);
+        if (fruit != null) {
+            intent.putExtra(ARG_FRUIT, fruit);
+            startActivityForResult(intent, RESULT_CODE_EDIT);
+        }
     }
 
     @Override
