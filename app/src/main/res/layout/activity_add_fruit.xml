@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/editFruitImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -35,8 +35,8 @@
         android:text="Fruit Name"
         android:textSize="24sp"
         android:textStyle="italic"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
+        app:layout_constraintStart_toEndOf="@+id/editFruitImageView"
+        app:layout_constraintTop_toTopOf="@+id/editFruitImageView" />
 
     <EditText
         android:id="@+id/editTextDate"
@@ -57,8 +57,8 @@
         android:text="Date: "
         android:textSize="24sp"
         android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintStart_toStartOf="@+id/editFruitImageView"
+        app:layout_constraintTop_toBottomOf="@+id/editFruitImageView" />
 
     <TextView
         android:id="@+id/fruitCountTextView"
@@ -68,7 +68,7 @@
         android:text="Count: "
         android:textSize="24sp"
         android:textStyle="italic"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/editFruitImageView"
         app:layout_constraintTop_toBottomOf="@+id/fruitDateTextView" />
 
     <EditText

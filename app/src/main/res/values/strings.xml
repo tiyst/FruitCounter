@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Fruit Counter</string>
     <string name="fruitCount">Count: %d</string>
+    <string name="fruitNameBanana">Banana</string>
 </resources>

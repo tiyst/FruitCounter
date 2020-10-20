@@ -5,27 +5,36 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
+import tech.tiyst.fruitcounter.FruitCounterException;
 import tech.tiyst.fruitcounter.R;
 
 public class EditFruitActivity extends AppCompatActivity {
 
     private static final String TAG = EditFruitActivity.class.getName();
 
-    public static final String ARG_NAME = "ARG_NAME";
+    public static final String ARG_FRUIT_ID = "ARG_FRUIT_ID";
+    public static final String ARG_FRUIT_NAME = "ARG_FRUIT_NAME";
     public static final String ARG_COUNT = "ARG_COUNT";
     public static final String ARG_DATE = "ARG_DATE";
+
+    private int fruitNameID;
+    private int count;
+    private Date fruitDate;
 
     private TextView nameText;
     private EditText dateText;
     private EditText countText;
+    private ImageView imageView;
 
     private final Calendar cal = Calendar.getInstance();
 
@@ -33,20 +42,35 @@ public class EditFruitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_fruit);
+
+        initViews();
+        fillViews();
+        initDatePicker();
+        updateDateLabel();
+    }
+
+    private void initViews() {
         this.dateText = findViewById(R.id.editTextDate);
         this.countText = findViewById(R.id.editTextCount);
         this.nameText = findViewById(R.id.fruitNameTextView);
-
-        initDatePicker();
+        this.imageView = findViewById(R.id.editFruitImageView);
     }
 
-    public void onSubmitClicked(View view) {
-        Intent intent = new Intent();
-        intent.putExtra(ARG_NAME, nameText.getText());
-        intent.putExtra(ARG_COUNT, Integer.parseInt(String.valueOf(countText.getText()))); //Disgusting
-        intent.putExtra(ARG_DATE, cal.getTime());
-        setResult(RESULT_OK, intent);
-        finish();
+    private void fillViews() throws FruitCounterException {
+        Bundle data = getIntent().getExtras();
+        String name = "Banana";
+        int count = 0;
+        Date date;
+        if (data != null && data.size() == 3) { //Editing existing fruit
+            name = data.getString(ARG_FRUIT_NAME);
+            count = data.getInt(ARG_COUNT);
+            date = (Date) data.getSerializable(ARG_DATE);
+            cal.setTime(date);
+        }
+
+        this.nameText.setText(name);
+        this.countText.setText(String.valueOf(count));
+        updateDateLabel();
     }
 
     private void initDatePicker() {

@@ -29,13 +29,13 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private static final int RESULT_CODE_ADD = 2;
+    private static final int RESULT_CODE_EDIT = 3;
 
     private FruitDatabase DATABASE;
     private ExecutorService executorService;
     private FragmentManager fManager;
 
     private FloatingActionButton fab;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,21 +69,32 @@ public class MainActivity extends AppCompatActivity
 
         if (resultCode == RESULT_OK) {
             if (requestCode == RESULT_CODE_ADD) {
-                String fruitName = data.getStringExtra(EditFruitActivity.ARG_NAME);
+                String fruitName = data.getStringExtra(EditFruitActivity.ARG_FRUIT_NAME);
                 int fruitCount = data.getIntExtra(EditFruitActivity.ARG_COUNT,-1);
                 Date fruitDate = (Date) data.getSerializableExtra(EditFruitActivity.ARG_DATE);
                 addFruit(fruitName, fruitCount, fruitDate);
+            }
+            if (requestCode == RESULT_CODE_EDIT) {
+                // TODO: 10/19/2020 do this 
+                Log.e(TAG, "onActivityResult: editing fruit finished" );
+                int fruitName = data.getIntExtra(EditFruitActivity.ARG_FRUIT_ID,-1);
+                getFragmentManager().findFragmentByTag("ytes");
+
+
             }
         }
     }
 
     public void addButton(View v) {
         Log.d(TAG, "addButton: ");
-//        addFruit();
         Intent intent = new Intent(this, EditFruitActivity.class);
         startActivityForResult(intent, RESULT_CODE_ADD);
     }
-    
+
+    public void addRandomFruit(View v) {
+        addFruitTesting();
+    }
+
     public void showButton(View v) {
         Log.d(TAG, "showButton: \n" + DATABASE.toString());
     }
@@ -102,14 +113,9 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
     }
 
-    private void addFruit() {
+    private void addFruitTesting() {
         Random rng = new Random();
-        Fruit fruit = new Fruit("banana", rng.nextInt(10), new Date());
-        fruit.setEntryID(DATABASE.fruitDao().insertFruit(fruit)); //Database insert doesn't touch local fruit object
-        FragmentTransaction ft = fManager.beginTransaction();
-        FruitFragment fruitFragment = FruitFragment.newInstance(fruit);
-        ft.add(R.id.fruitListLayout, fruitFragment, String.valueOf(fruit.getEntryID()));
-        ft.commit();
+        addFruit("banana", rng.nextInt(10), new Date());
     }
 
     private void removeAllFruits() {
@@ -128,6 +134,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFruitSelected(long id) {
         Log.d(TAG, "onFruitSelected: " + id);
+        Intent intent = new Intent(this, EditFruitActivity.class);
+        Fruit fruit = DATABASE.fruitDao().getFruit(id);
+        intent.putExtra(EditFruitActivity.ARG_FRUIT_NAME, fruit.getFruitName());
+        intent.putExtra(EditFruitActivity.ARG_COUNT, fruit.getCount());
+        intent.putExtra(EditFruitActivity.ARG_DATE, fruit.getDate());
+        startActivityForResult(intent, RESULT_CODE_EDIT);
     }
 
     @Override
@@ -139,12 +151,12 @@ public class MainActivity extends AppCompatActivity
 
             if (linesAffected == 1) {
                 FragmentTransaction ft = fManager.beginTransaction()
-                        .setCustomAnimations(
-                        R.anim.slide_in,  // enter
-                        R.anim.fade_out,  // exit
-                        R.anim.fade_in,   // popEnter
-                        R.anim.slide_out  // popExit
-                );
+                    .setCustomAnimations(
+                        R.anim.slide_in,
+                        R.anim.fade_out,
+                        R.anim.fade_in,
+                        R.anim.slide_out
+                    );
     //            ft.hide(f); //What does hide do?
                 ft.remove(f);
                 ft.commit();

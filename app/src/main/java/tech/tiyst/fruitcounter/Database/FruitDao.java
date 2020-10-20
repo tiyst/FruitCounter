@@ -13,6 +13,9 @@ import java.util.List;
 @Dao
 public interface FruitDao {
 
+    @Query("SELECT * FROM fruits WHERE entryID=:id")
+    Fruit getFruit(long id);
+
     @Query("SELECT * FROM fruits")
     List<Fruit> getFruits();
 

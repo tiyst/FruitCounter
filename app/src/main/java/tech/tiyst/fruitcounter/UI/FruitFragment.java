@@ -40,14 +40,6 @@ public class FruitFragment extends Fragment {
 
     private OnFruitSelectedListener listener;
 
-    private void initIdAttributes() {
-
-        this.nameText.setText(fruitName);
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-        this.dateText.setText(dateFormat.format(fruitDate));
-        this.countText.setText(getResources().getString(R.string.fruitCount, this.fruitCount));
-
-    }
 
     public FruitFragment() {
         // Required empty public constructor
@@ -94,6 +86,14 @@ public class FruitFragment extends Fragment {
 
         this.initIdAttributes();
         view.setOnClickListener(v -> fragmentClicked());
+    }
+
+    private void initIdAttributes() {
+        this.nameText.setText(fruitName);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        this.dateText.setText(dateFormat.format(fruitDate));
+        this.countText.setText(getResources().getString(R.string.fruitCount, this.fruitCount));
+
     }
 
     public void setListener(OnFruitSelectedListener listener) {
