@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <ImageButton
+        android:id="@+id/editDialogCalendarButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editDialogFruitImage"
+        app:srcCompat="@android:drawable/ic_menu_my_calendar" />
+
+    <TextView
+        android:id="@+id/editDialogFruitNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FruitName"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/editDialogFruitImage"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/editDialogFruitNameText"
+        app:layout_constraintTop_toBottomOf="@+id/editDialogFruitNameText"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <EditText
+        android:id="@+id/editDialogFruitDateText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:hint="Date"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/editDialogCalendarButton"
+        app:layout_constraintEnd_toStartOf="@+id/editDialogCalendarButton"
+        app:layout_constraintStart_toEndOf="@+id/editDialogFruitImage"
+        app:layout_constraintTop_toTopOf="@+id/editDialogCalendarButton" />
+
+    <EditText
+        android:id="@+id/editDialogCountText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Count"
+        android:inputType="numberSigned"
+        app:layout_constraintBottom_toBottomOf="@+id/editDialogFruitImage"
+        app:layout_constraintEnd_toEndOf="@+id/editDialogCalendarButton"
+        app:layout_constraintStart_toStartOf="@+id/editDialogFruitDateText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--android:padding="16dp">-->
+<!--</RelativeLayout>-->

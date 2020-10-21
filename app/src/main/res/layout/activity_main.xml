@@ -17,6 +17,14 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/showDialogButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="showDialog"
+            android:text="dialog" />
+
+        <Button
             android:id="@+id/buttonAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

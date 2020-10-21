@@ -18,14 +18,15 @@ import java.util.Date;
 import java.util.Locale;
 
 import tech.tiyst.fruitcounter.Database.Fruit;
+import tech.tiyst.fruitcounter.FCRuntimeException;
 import tech.tiyst.fruitcounter.R;
 
-public class FruitFragment extends Fragment {
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_ID;
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_NAME;
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_COUNT;
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_DATE;
 
-    private static final String ARG_ID = "argFruitID";
-    private static final String ARG_NAME = "argFruitName";
-    private static final String ARG_COUNT = "argFruitCount";
-    private static final String ARG_DATE = "argFruitDate";
+public class FruitFragment extends Fragment {
 
     private long fruitID;
     private String fruitName;
@@ -40,7 +41,6 @@ public class FruitFragment extends Fragment {
 
     private OnFruitSelectedListener listener;
 
-
     public FruitFragment() {
         // Required empty public constructor
     }
@@ -48,8 +48,8 @@ public class FruitFragment extends Fragment {
     public static FruitFragment newInstance(Fruit fruit) {
         FruitFragment fragment = new FruitFragment();
         Bundle args = new Bundle();
-        args.putLong(ARG_ID, fruit.getEntryID());
-        args.putString(ARG_NAME, fruit.getFruitName());
+        args.putLong(ARG_FRUIT_ID, fruit.getEntryID());
+        args.putString(ARG_FRUIT_NAME, fruit.getFruitName());
         args.putInt(ARG_COUNT, fruit.getCount());
         args.putSerializable(ARG_DATE, fruit.getDate());
         fragment.setArguments(args);
@@ -60,10 +60,29 @@ public class FruitFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            fruitID = getArguments().getLong(ARG_ID);
-            fruitName = getArguments().getString(ARG_NAME);
+            fruitID = getArguments().getLong(ARG_FRUIT_ID);
+            fruitName = getArguments().getString(ARG_FRUIT_NAME);
             fruitCount = getArguments().getInt(ARG_COUNT);
             fruitDate = (Date)getArguments().getSerializable(ARG_DATE);
+        }
+    }
+
+    public void editText(String which, String value) {
+        switch (which) {
+            case ARG_FRUIT_NAME:
+                this.nameText.setText(value);
+                break;
+            case ARG_COUNT:
+                this.countText.setText(getResources().getString(R.string.fruitCount, this.fruitCount));
+                break;
+            case ARG_DATE:
+                this.dateText.setText(value);
+                break;
+
+            case ARG_FRUIT_ID:
+            default:
+                throw new FCRuntimeException("The fuck am I doing?");
+
         }
     }
 

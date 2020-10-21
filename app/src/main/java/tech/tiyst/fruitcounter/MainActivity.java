@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 
 import tech.tiyst.fruitcounter.Database.Fruit;
 import tech.tiyst.fruitcounter.Database.FruitDatabase;
+import tech.tiyst.fruitcounter.UI.EditDialog;
 import tech.tiyst.fruitcounter.UI.EditFruitActivity;
 import tech.tiyst.fruitcounter.UI.FruitFragment;
 
@@ -34,11 +35,11 @@ import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_NAME;
 // TODO: 10/17/2020 edit fruit
 
 public class MainActivity extends AppCompatActivity
-        implements FruitFragment.OnFruitSelectedListener {
+        implements FruitFragment.OnFruitSelectedListener, EditDialog.EditDialogListener {
 
     private static final String TAG = "MainActivity";
-    private static final int RESULT_CODE_ADD = 2;
-    private static final int RESULT_CODE_EDIT = 3;
+    public static final int RESULT_CODE_ADD = 2;
+    public static final int RESULT_CODE_EDIT = 3;
 
     private FruitDatabase DATABASE;
     private ExecutorService executorService;
@@ -124,6 +125,11 @@ public class MainActivity extends AppCompatActivity
         removeAllFruits();
     }
 
+    private void addFruitTesting() {
+        Random rng = new Random();
+        addFruit("banana", rng.nextInt(10), new Date());
+    }
+
     private void addFruit(Fruit fruit) {
         this.addFruit(fruit.getFruitName(), fruit.getCount(), fruit.getDate());
     }
@@ -137,9 +143,8 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
     }
 
-    private void addFruitTesting() {
-        Random rng = new Random();
-        addFruit("banana", rng.nextInt(10), new Date());
+    private void removeFruit(Fruit fruit) {
+        DATABASE.fruitDao().deleteFruit(fruit.getEntryID());
     }
 
     private void removeAllFruits() {
@@ -166,6 +171,14 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void showDialog(View view) {
+        EditDialog editDialog = new EditDialog();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Fruit", new Fruit("test", -1, new Date()));
+        editDialog.setArguments(bundle);
+        editDialog.show(getSupportFragmentManager(), "example dialog");
+    }
+
     @Override
     public void deleteFruit(long id) {
         Fragment f = fManager.findFragmentByTag(String.valueOf(id));
@@ -181,10 +194,14 @@ public class MainActivity extends AppCompatActivity
                         R.anim.fade_in,
                         R.anim.slide_out
                     );
-    //            ft.hide(f); //What does hide do?
                 ft.remove(f);
                 ft.commit();
             }
         }
+    }
+
+    @Override
+    public void applyFruit(Fruit fruit) {
+        Log.e(TAG, "applyFruit: " + fruit.toString());
     }
 }
