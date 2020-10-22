@@ -1,12 +1,10 @@
 package tech.tiyst.fruitcounter;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -14,28 +12,22 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import tech.tiyst.fruitcounter.Database.Fruit;
 import tech.tiyst.fruitcounter.Database.FruitDatabase;
-import tech.tiyst.fruitcounter.UI.EditDialog;
-import tech.tiyst.fruitcounter.UI.EditFruitActivity;
+import tech.tiyst.fruitcounter.UI.EditFruitDialog;
 import tech.tiyst.fruitcounter.UI.FruitFragment;
 
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_COUNT;
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_DATE;
 import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT;
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_NAME;
 
 // TODO: 10/17/2020 edit fruit
 
 public class MainActivity extends AppCompatActivity
-        implements FruitFragment.OnFruitSelectedListener, EditDialog.EditDialogListener {
+        implements FruitFragment.OnFruitSelectedListener, EditFruitDialog.EditDialogListener {
 
     private static final String TAG = "MainActivity";
     public static final int RESULT_CODE_ADD = 2;
@@ -61,7 +53,6 @@ public class MainActivity extends AppCompatActivity
 
     private void initFab() {
         fab = findViewById(R.id.addFruitFab);
-
     }
 
     private void populateFruitList() {
@@ -73,43 +64,10 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == RESULT_CODE_ADD) {
-                Fruit fruit = (Fruit) data.getSerializableExtra(ARG_FRUIT);
-                if (fruit == null) {
-                    throw new FCRuntimeException("Fruit returned from adding is null"); //Please don't happen
-                }
-                addFruit(fruit);
-            }
-            if (requestCode == RESULT_CODE_EDIT) {
-                Fruit fruit = (Fruit) data.getSerializableExtra(ARG_FRUIT);
-                if (fruit == null) {
-                    throw new FCRuntimeException("Fruit returned from adding is null"); //Please don't happen
-                }
-                FruitFragment frag = (FruitFragment)
-                        getSupportFragmentManager().findFragmentByTag(String.valueOf(fruit.getEntryID()));
-                if (frag != null) {
-                    frag.editText(ARG_FRUIT_NAME, data.getStringExtra(ARG_FRUIT_NAME));
-                    frag.editText(ARG_COUNT, String.valueOf(data.getIntExtra(ARG_COUNT, -1)));
-                    Date date = (Date) data.getSerializableExtra(ARG_DATE);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-                    frag.editText(ARG_DATE, dateFormat.format(date));
-
-                }
-
-                Log.e(TAG, "onActivityResult: editing fruit finished" );
-            }
-        }
-    }
-
     public void addButton(View v) {
         Log.d(TAG, "addButton: ");
-        Intent intent = new Intent(this, EditFruitActivity.class);
-        startActivityForResult(intent, RESULT_CODE_ADD);
+        EditFruitDialog editFruitDialog = new EditFruitDialog();
+        editFruitDialog.show(getSupportFragmentManager(), EditFruitDialog.class.getSimpleName());
     }
 
     public void addRandomFruit(View v) {
@@ -143,13 +101,23 @@ public class MainActivity extends AppCompatActivity
         ft.commit();
     }
 
+    private void editFruit(Fruit fruit) {
+        EditFruitDialog editFruitDialog = new EditFruitDialog();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ARG_FRUIT, fruit);
+        editFruitDialog.setArguments(bundle);
+        editFruitDialog.show(getSupportFragmentManager(), EditFruitDialog.class.getSimpleName());
+    }
+
     private void removeFruit(Fruit fruit) {
         DATABASE.fruitDao().deleteFruit(fruit.getEntryID());
     }
 
     private void removeAllFruits() {
         DATABASE.fruitDao().deleteAllFruits();
-        // TODO: 10/5/2020 remove all fragments
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
     }
 
     @Override
@@ -163,20 +131,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFruitSelected(long id) {
         Log.d(TAG, "onFruitSelected: " + id);
-        Intent intent = new Intent(this, EditFruitActivity.class);
         Fruit fruit = DATABASE.fruitDao().getFruit(id);
         if (fruit != null) {
-            intent.putExtra(ARG_FRUIT, fruit);
-            startActivityForResult(intent, RESULT_CODE_EDIT);
+            editFruit(fruit);
         }
     }
 
     public void showDialog(View view) {
-        EditDialog editDialog = new EditDialog();
+        EditFruitDialog editFruitDialog = new EditFruitDialog();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("Fruit", new Fruit("test", -1, new Date()));
-        editDialog.setArguments(bundle);
-        editDialog.show(getSupportFragmentManager(), "example dialog");
+        bundle.putSerializable(ARG_FRUIT, new Fruit("test", -1, new Date()));
+        editFruitDialog.setArguments(bundle);
+        editFruitDialog.show(getSupportFragmentManager(), EditFruitDialog.class.getSimpleName());
     }
 
     @Override
@@ -201,7 +167,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void applyFruit(Fruit fruit) {
-        Log.e(TAG, "applyFruit: " + fruit.toString());
+    public void addFruitFromDialog(Fruit fruit) {
+        Log.e(TAG, "addFruitFromDialog: ");
+        addFruit(fruit);
+    }
+
+    @Override
+    public void editFruitFromDialog(Fruit fruit) {
+        Log.e(TAG, "editFruitFromDialog: ");
+
+        Fruit f = DATABASE.fruitDao().getFruit(fruit.getEntryID());
+        if (f != null) {
+            FruitFragment frag = (FruitFragment)
+                    getSupportFragmentManager().findFragmentByTag(String.valueOf(fruit.getEntryID()));
+            if (frag != null) {
+                int linesAffected = DATABASE.fruitDao().updateFruit(fruit);
+                frag.editFruitType(fruit);
+                frag.editCountText(fruit.getCount());
+                frag.editDateText(fruit.getDate());
+
+                Log.d(TAG, "edit fruit from dialog: update lines affected: " + linesAffected);
+
+            }
+        }
     }
 }

@@ -18,15 +18,16 @@ import java.util.Date;
 import java.util.Locale;
 
 import tech.tiyst.fruitcounter.Database.Fruit;
-import tech.tiyst.fruitcounter.FCRuntimeException;
 import tech.tiyst.fruitcounter.R;
 
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_ID;
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_NAME;
 import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_COUNT;
 import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_DATE;
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_ID;
+import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_NAME;
 
 public class FruitFragment extends Fragment {
+
+    private static final String TAG = "FruitFragment";
 
     private long fruitID;
     private String fruitName;
@@ -67,23 +68,27 @@ public class FruitFragment extends Fragment {
         }
     }
 
-    public void editText(String which, String value) {
-        switch (which) {
-            case ARG_FRUIT_NAME:
-                this.nameText.setText(value);
-                break;
-            case ARG_COUNT:
-                this.countText.setText(getResources().getString(R.string.fruitCount, this.fruitCount));
-                break;
-            case ARG_DATE:
-                this.dateText.setText(value);
-                break;
+    public void editFruitType(Fruit fruit) { //Will change both name and image
+        this.nameText.setText(fruit.getFruitName());
+    }
 
-            case ARG_FRUIT_ID:
-            default:
-                throw new FCRuntimeException("The fuck am I doing?");
+    public void editDateText(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        this.editDateText(dateFormat.format(date));
+    }
 
-        }
+    public void editDateText(String value) {
+        this.dateText.setText(value);
+    }
+
+    public void editCountText(int value) {
+        this.fruitCount = value;
+        String s = getResources().getString(R.string.fruitCount, this.fruitCount);
+        this.countText.setText(s);
+    }
+
+    public void editCountText(String value) {
+        this.editCountText(Integer.parseInt(value));
     }
 
     @Override
@@ -112,7 +117,6 @@ public class FruitFragment extends Fragment {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
         this.dateText.setText(dateFormat.format(fruitDate));
         this.countText.setText(getResources().getString(R.string.fruitCount, this.fruitCount));
-
     }
 
     public void setListener(OnFruitSelectedListener listener) {
@@ -124,7 +128,7 @@ public class FruitFragment extends Fragment {
     }
 
     public interface OnFruitSelectedListener {
-        public void onFruitSelected(long id);
-        public void deleteFruit(long id);
+        void onFruitSelected(long id);
+        void deleteFruit(long id);
     }
 }
