@@ -28,11 +28,7 @@ public class MainActivity extends AppCompatActivity
         implements FruitFragment.OnFruitSelectedListener, EditFruitDialog.EditDialogListener {
 
     private static final String TAG = "MainActivity";
-
     private static final String ARG_FRUIT = "ARG_FRUIT";
-
-    public static final int RESULT_CODE_ADD = 2;
-    public static final int RESULT_CODE_EDIT = 3;
 
     private FruitDatabase DATABASE;
     private ExecutorService executorService;
@@ -73,10 +69,6 @@ public class MainActivity extends AppCompatActivity
 
     public void addRandomFruit(View v) {
         addFruitTesting();
-    }
-
-    public void showButton(View v) {
-        Log.d(TAG, "showButton: \n" + DATABASE.toString());
     }
 
     public void removeButton(View v) {
@@ -136,14 +128,6 @@ public class MainActivity extends AppCompatActivity
         if (fruit != null) {
             editFruit(fruit);
         }
-    }
-
-    public void showDialog(View view) {
-        EditFruitDialog editFruitDialog = new EditFruitDialog();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ARG_FRUIT, new Fruit("test", -1, new Date()));
-        editFruitDialog.setArguments(bundle);
-        editFruitDialog.show(getSupportFragmentManager(), EditFruitDialog.class.getSimpleName());
     }
 
     @Override
