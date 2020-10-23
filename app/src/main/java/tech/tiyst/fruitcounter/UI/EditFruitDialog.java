@@ -27,11 +27,11 @@ import tech.tiyst.fruitcounter.Database.Fruit;
 import tech.tiyst.fruitcounter.FCRuntimeException;
 import tech.tiyst.fruitcounter.R;
 
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT;
-
 public class EditFruitDialog extends AppCompatDialogFragment {
 
 	private static final String TAG = "EditFruitDialog";
+	private static final String ARG_FRUIT = "ARG_FRUIT";
+
 	private final Calendar cal = Calendar.getInstance();
 
 	private TextView nameText;

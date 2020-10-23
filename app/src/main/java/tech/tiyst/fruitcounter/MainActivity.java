@@ -22,14 +22,15 @@ import tech.tiyst.fruitcounter.Database.FruitDatabase;
 import tech.tiyst.fruitcounter.UI.EditFruitDialog;
 import tech.tiyst.fruitcounter.UI.FruitFragment;
 
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT;
-
 // TODO: 10/17/2020 edit fruit
 
 public class MainActivity extends AppCompatActivity
         implements FruitFragment.OnFruitSelectedListener, EditFruitDialog.EditDialogListener {
 
     private static final String TAG = "MainActivity";
+
+    private static final String ARG_FRUIT = "ARG_FRUIT";
+
     public static final int RESULT_CODE_ADD = 2;
     public static final int RESULT_CODE_EDIT = 3;
 

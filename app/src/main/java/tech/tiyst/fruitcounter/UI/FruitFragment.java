@@ -20,14 +20,14 @@ import java.util.Locale;
 import tech.tiyst.fruitcounter.Database.Fruit;
 import tech.tiyst.fruitcounter.R;
 
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_COUNT;
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_DATE;
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_ID;
-import static tech.tiyst.fruitcounter.UI.EditFruitActivity.ARG_FRUIT_NAME;
-
 public class FruitFragment extends Fragment {
 
     private static final String TAG = "FruitFragment";
+
+    private static final String ARG_FRUIT_ID = "ARG_FRUIT_ID";
+    private static final String ARG_FRUIT_NAME = "ARG_FRUIT_NAME";
+    private static final String ARG_COUNT = "ARG_COUNT";
+    private static final String ARG_DATE = "ARG_DATE";
 
     private long fruitID;
     private String fruitName;
