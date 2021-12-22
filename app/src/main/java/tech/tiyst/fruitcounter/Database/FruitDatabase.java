@@ -10,7 +10,7 @@ import androidx.room.TypeConverters;
 
 import java.util.List;
 
-@Database(entities = Fruit.class, version = 1)
+@Database(entities = Fruit.class, version = 1, exportSchema = false)
 @TypeConverters({DatabaseTypeConverters.class})
 public abstract class FruitDatabase extends RoomDatabase {
 

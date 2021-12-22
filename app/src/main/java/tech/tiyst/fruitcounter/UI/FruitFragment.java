@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import java.text.DateFormat;
@@ -113,6 +114,7 @@ public class FruitFragment extends Fragment {
     }
 
     private void initIdAttributes() {
+        this.fruitImage.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.banana, null));
         this.nameText.setText(fruitName);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
         this.dateText.setText(dateFormat.format(fruitDate));

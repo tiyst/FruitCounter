@@ -31,7 +31,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@+id/editDialogFruitNameText"
         app:layout_constraintTop_toBottomOf="@+id/editDialogFruitNameText"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@drawable/banana" />
 
     <EditText
         android:id="@+id/editDialogFruitDateText"

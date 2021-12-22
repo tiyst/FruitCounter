@@ -3,7 +3,6 @@ package tech.tiyst.fruitcounter;
 public enum FruitType {
     BANANA(R.drawable.banana, R.string.fruitNameBanana);
 
-
     private int fruitImageID;
     private int fruitNameID;
 
@@ -15,8 +14,6 @@ public enum FruitType {
     public FruitType fromString(String name) {
         return FruitType.valueOf(name.toUpperCase());
     }
-
-
 
     public int getFruitImageID() {
         return fruitImageID;

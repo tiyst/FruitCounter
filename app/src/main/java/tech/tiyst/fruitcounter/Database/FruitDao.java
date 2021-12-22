@@ -16,17 +16,17 @@ public interface FruitDao {
     @Query("SELECT * FROM fruits WHERE entryID=:id")
     Fruit getFruit(long id);
 
-    @Query("SELECT * FROM fruits")
+    @Query("SELECT * FROM fruits ORDER BY date DESC")
     List<Fruit> getFruits();
 
-    @Query("SELECT * FROM fruits WHERE date BETWEEN :from AND :to")
+    @Query("SELECT * FROM fruits WHERE date BETWEEN :from AND :to ORDER BY date DESC")
     List<Fruit> getFruits(Date from, Date to);
 
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertFruit(Fruit fruit);
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long[] insertFruits(List<Fruit> fruits);
 
     @Update

@@ -11,12 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -39,6 +41,7 @@ public class EditFruitDialog extends AppCompatDialogFragment {
 	private EditText countText;
 	private ImageButton calendarButton;
 	private EditDialogListener listener;
+	private ImageView fruitImage;
 
 	private boolean isEditingFruit;
 	private Fruit fruit;
@@ -50,9 +53,13 @@ public class EditFruitDialog extends AppCompatDialogFragment {
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View view = inflater.inflate(R.layout.edit_dialog, null);
 		builder.setView(view)
-				.setTitle("IT FUCKING WORKS!!!")
+				.setTitle("Bananas?")
 				.setNegativeButton("Cancel", (dialogInterface, i) -> {})
 				.setPositiveButton("Submit", (dialogInterface, i) -> {
+					if (fruit.getCount() == 0) {
+						Log.d(TAG, "onCreateDialog: Empty count?");
+						return;
+					}
 					if (isEditingFruit) {
 						listener.editFruitFromDialog(fruit);
 					} else {
@@ -75,7 +82,7 @@ public class EditFruitDialog extends AppCompatDialogFragment {
 		initCountView(view);
 		initDateView(view);
 		updateDateText();
-		updateCountText();
+//		updateCountText();
 		updateFruitText();
 	}
 
@@ -98,7 +105,7 @@ public class EditFruitDialog extends AppCompatDialogFragment {
 						Log.d(TAG, "CountTextValue: " + value);
 					}
 				} catch (NumberFormatException ex) {
-					Toast.makeText(view.getContext(), "Only numbers please", Toast.LENGTH_SHORT).show();
+					Toast.makeText(view.getContext(), "Dud, only numbers yes?", Toast.LENGTH_SHORT).show();
 					countText.setText("0");
 					fruit.setCount(0);
 				}
@@ -109,6 +116,7 @@ public class EditFruitDialog extends AppCompatDialogFragment {
 	private void initDateView(View view) {
 		this.dateText = view.findViewById(R.id.editDialogFruitDateText);
 		this.calendarButton = view.findViewById(R.id.editDialogCalendarButton);
+		this.fruitImage = view.findViewById(R.id.editDialogFruitImage);
 
 		DatePickerDialog.OnDateSetListener date = (v, year, monthOfYear, dayOfMonth) -> {
 			cal.set(Calendar.YEAR, year);
@@ -146,6 +154,7 @@ public class EditFruitDialog extends AppCompatDialogFragment {
 	private void updateFruitText() {
 		// TODO: 10/23/2020 fruit image
 		this.nameText.setText(this.fruit.getFruitName());
+		this.fruitImage.setImageResource(R.drawable.banana);
 	}
 
 	@Override

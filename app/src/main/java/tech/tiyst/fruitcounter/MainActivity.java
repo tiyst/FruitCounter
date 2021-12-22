@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity
 
     private void populateFruitList() {
         FragmentTransaction fragmentTransaction = fManager.beginTransaction();
+        Log.d(TAG, " getting fruits");
         for (Fruit fruit : this.DATABASE.fruitDao().getFruits()) {
             fragmentTransaction.add(R.id.fruitListLayout, FruitFragment.newInstance(fruit), String.valueOf(fruit.getEntryID()));
         }
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity
 
     private void addFruitTesting() {
         Random rng = new Random();
-        addFruit("banana", rng.nextInt(10), new Date());
+        addFruit("Banana", rng.nextInt(10), new Date());
     }
 
     private void addFruit(Fruit fruit) {
@@ -172,7 +173,6 @@ public class MainActivity extends AppCompatActivity
                 frag.editDateText(fruit.getDate());
 
                 Log.d(TAG, "edit fruit from dialog: update lines affected: " + linesAffected);
-
             }
         }
     }
